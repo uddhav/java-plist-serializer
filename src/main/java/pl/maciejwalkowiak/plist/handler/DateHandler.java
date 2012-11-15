@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import com.dd.plist.NSDate;
+
 public class DateHandler implements Handler {
 	private SimpleDateFormat dateFormat;
 
@@ -20,5 +22,9 @@ public class DateHandler implements Handler {
 
 	public String handle(Object object) {
 		return XMLHelper.wrap(dateFormat.format(object)).with("date");
+	}
+	
+	public NSDate objectify(Object object) {
+		return new NSDate((Date)object);
 	}
 }

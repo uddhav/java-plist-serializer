@@ -1,5 +1,7 @@
 package pl.maciejwalkowiak.plist;
 
+import com.dd.plist.NSObject;
+
 /**
  * Main java-plist-serializer interface, representing a component that serializes Java objects to Apple Property Lists
  * {@see http://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/PropertyLists/Introduction/Introduction.html}
@@ -27,4 +29,11 @@ public interface PlistSerializer {
 	 * @return a String containing XML representation without XML header, DOCTYPE
 	 */
 	String serialize(Object objectToConvert);
+	
+	/**
+	 * Generates NSObject from object
+	 * @param object
+	 * @return
+	 */
+	NSObject objectify(Object objectToConvert);
 }

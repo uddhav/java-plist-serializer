@@ -5,6 +5,11 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import com.dd.plist.NSDictionary;
+import com.dd.plist.NSNumber;
+import com.dd.plist.NSObject;
+
 import pl.maciejwalkowiak.plist.PlistSerializerImpl;
 import pl.maciejwalkowiak.plist.strategy.DefaultNamingStrategy;
 
@@ -32,11 +37,19 @@ public class MapHandlerTest {
 		map.put("key2", 2);
 
 		given(plistSerializer.serialize(anyInt())).willReturn("<integer>1</integer>");
+		given(plistSerializer.objectify(anyInt())).willReturn(new NSNumber(1));
 		given(plistSerializer.getNamingStrategy()).willReturn(new DefaultNamingStrategy());
 
 		String xml = mapHandler.doHandle(map);
 
 		assertThat(xml).isEqualTo("<dict><key>key1</key><integer>1</integer><key>key2</key><integer>1</integer></dict>");
+		
+		NSObject object = mapHandler.doObjectify(map);
+		
+		NSDictionary d = new NSDictionary();
+		d.put("key1", new NSNumber(1));
+		d.put("key2", new NSNumber(1));
+		assertThat(object.toXMLPropertyList()).isEqualTo(d.toXMLPropertyList());
 	}
 
 	@Test

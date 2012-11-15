@@ -2,6 +2,9 @@ package pl.maciejwalkowiak.plist.handler;
 
 import org.junit.Test;
 
+import com.dd.plist.NSNumber;
+import com.dd.plist.NSObject;
+
 import static org.fest.assertions.Assertions.assertThat;
 
 public class BooleanHandlerTest {
@@ -17,6 +20,12 @@ public class BooleanHandlerTest {
 
 		//then
 		assertThat(result).isEqualTo("<true/>");
+		
+		//when
+		NSObject object = handler.objectify(toHandle);
+
+		//then
+		assertThat(object).isEqualTo(new NSNumber(toHandle));
 	}
 
 	@Test
@@ -29,5 +38,11 @@ public class BooleanHandlerTest {
 
 		//then
 		assertThat(result).isEqualTo("<false/>");
+		
+		//when
+		NSObject object = handler.objectify(toHandle);
+
+		//then
+		assertThat(object).isEqualTo(new NSNumber(toHandle));
 	}
 }

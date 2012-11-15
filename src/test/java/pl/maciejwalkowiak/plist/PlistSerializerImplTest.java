@@ -1,6 +1,13 @@
 package pl.maciejwalkowiak.plist;
 
 import org.junit.Test;
+
+import com.dd.plist.NSArray;
+import com.dd.plist.NSDictionary;
+import com.dd.plist.NSNumber;
+import com.dd.plist.NSObject;
+import com.dd.plist.NSString;
+
 import pl.maciejwalkowiak.plist.handler.Handler;
 import pl.maciejwalkowiak.plist.strategy.UppercaseNamingStrategy;
 
@@ -22,6 +29,13 @@ public class PlistSerializerImplTest {
 
 		//then
 		assertThat(xml).isEqualTo("<array><string>string1</string><string>string2</string><string>string3</string></array>");
+		
+		// when
+		NSObject object = plistSerializer.objectify(strings);
+		
+		// then
+		NSArray array = new NSArray(new NSObject[] { new NSString("string1"), new NSString("string2"), new NSString("string3") });
+		assertThat(object.toXMLPropertyList()).isEqualTo(array.toXMLPropertyList());
 	}
 
 	@Test
@@ -34,6 +48,13 @@ public class PlistSerializerImplTest {
 
 		//then
 		assertThat(xml).isEqualTo("<array><integer>4</integer><integer>6</integer><integer>8</integer></array>");
+		
+		// when
+		NSObject object = plistSerializer.objectify(strings);
+		
+		// then
+		NSArray array = new NSArray(new NSObject[] { new NSNumber(4), new NSNumber(6), new NSNumber(8) });
+		assertThat(object.toXMLPropertyList()).isEqualTo(array.toXMLPropertyList());
 	}
 
 	@Test
@@ -54,11 +75,34 @@ public class PlistSerializerImplTest {
 				"<key>title</key><string>" + post.getTitle() + "</string>" +
 				"<key>views</key><integer>" + post.getViews() + "</integer>" +
 				"</dict>");
+		
+		// when
+		NSObject object = plistSerializer.objectify(post);
+		
+		// then
+		NSDictionary postD = new NSDictionary();
+		NSDictionary authorD = new NSDictionary();
+		NSDictionary commentD1 = new NSDictionary();
+		NSDictionary commentD2 = new NSDictionary();
+		authorD.put("name", new NSString("jason bourne"));
+		postD.put("author", authorD);
+		NSArray commentA = new NSArray(2);
+		commentD1.put("author", new NSString("maciejwalkowiak"));
+		commentD1.put("content", new NSString("first comment"));
+		commentD2.put("author", new NSString("john doe"));
+		commentD2.put("content", new NSString("second comment"));
+		commentA.setValue(0, commentD1);
+		commentA.setValue(1, commentD2);
+		postD.put("comments", commentA);
+		postD.put("title", new NSString("java-plist-serializer introduction"));
+		postD.put("views", new NSNumber(9));
+		assertThat(object.toXMLPropertyList()).isEqualTo(postD.toXMLPropertyList());
 	}
 
 	@Test
 	public void testNullSerialization() {
 		assertThat(plistSerializer.serialize(null)).isEqualTo("");
+		assertThat(plistSerializer.objectify(null)).isEqualTo(null);
 	}
 
 	@Test
@@ -71,6 +115,14 @@ public class PlistSerializerImplTest {
 
 		//then
 		assertThat(result).isEqualTo("<dict><key>serializableField</key><integer>1</integer></dict>");
+		
+		// when
+		NSObject object = plistSerializer.objectify(classWithStaticFields);
+		
+		// then
+		NSDictionary cD = new NSDictionary();
+		cD.put("serializableField", new NSNumber(1));
+		assertThat(object.toXMLPropertyList()).isEqualTo(cD.toXMLPropertyList());
 	}
 
 	@Test
@@ -83,6 +135,14 @@ public class PlistSerializerImplTest {
 
 		//then
 		assertThat(xml).isEqualTo("<dict><key>trick</key><string>i am renamed</string></dict>");
+		
+		// when
+		NSObject object = plistSerializer.objectify(classWithAnnotations);
+		
+		// then
+		NSDictionary cD = new NSDictionary();
+		cD.put("trick", new NSString("i am renamed"));
+		assertThat(object.toXMLPropertyList()).isEqualTo(cD.toXMLPropertyList());
 	}
 
 	@Test
@@ -96,6 +156,15 @@ public class PlistSerializerImplTest {
 
 		//then
 		assertThat(xml).isEqualTo("<dict><key>FIRST_FIELD</key><string>i am following</string><key>secondField</key><string>i am not following</string></dict>");
+		
+		// when
+		NSObject object = plistSerializer.objectify(annotatedClass);
+		
+		// then
+		NSDictionary cD = new NSDictionary();
+		cD.put("FIRST_FIELD", new NSString("i am following"));
+		cD.put("secondField", new NSString("i am not following"));
+		assertThat(object.toXMLPropertyList()).isEqualTo(cD.toXMLPropertyList());
 	}
 
 	@Test
@@ -108,6 +177,14 @@ public class PlistSerializerImplTest {
 
 		//then
 		assertThat(xml).isEqualTo("<dict><key>content</key><string>content</string></dict>");
+		
+		// when
+		NSObject object = plistSerializer.objectify(comment);
+		
+		// then
+		NSDictionary cD = new NSDictionary();
+		cD.put("content", new NSString("content"));
+		assertThat(object.toXMLPropertyList()).isEqualTo(cD.toXMLPropertyList());
 	}
 
 	@Test
@@ -129,13 +206,21 @@ public class PlistSerializerImplTest {
 	public void testAdditionalHandler() {
 		//given
 		Handler bigDecimalHandler = new BigDecimalHandler();
+		BigDecimal bd = new BigDecimal(3);
 
 		//when
 		plistSerializer.setAdditionalHandlers(Arrays.asList(bigDecimalHandler));
-		String xml = plistSerializer.serialize(new BigDecimal(3));
+		String xml = plistSerializer.serialize(bd);
 
 		//then
 		assertThat(xml).isEqualTo("<integer>3</integer>");
+		
+		// when
+		NSObject object = plistSerializer.objectify(bd);
+		
+		// then
+		NSNumber number = new NSNumber(3);
+		assertThat(object).isEqualTo(number);
 	}
 
 	@Test
@@ -148,6 +233,13 @@ public class PlistSerializerImplTest {
 
 		//then
 		assertThat(xml).isEqualTo("<real>4.55</real>");
+		
+		// when
+		NSObject nsObject = plistSerializer.objectify(object);
+		
+		// then
+		NSNumber number = new NSNumber(object.doubleValue());
+		assertThat(nsObject).isEqualTo(number);
 	}
 
 	@Test

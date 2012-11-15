@@ -1,5 +1,7 @@
 package pl.maciejwalkowiak.plist.handler;
 
+import com.dd.plist.NSObject;
+
 import pl.maciejwalkowiak.plist.PlistSerializerImpl;
 
 /**
@@ -20,6 +22,15 @@ public abstract class AbstractHandler implements Handler {
 
 		return doHandle(object);
 	}
+	
+	public NSObject objectify(Object object) {
+		if (plistSerializer == null) {
+			throw new IllegalStateException("plist is not initialized");
+		}
+
+		return doObjectify(object);
+	}
 
 	abstract String doHandle(Object object);
+	abstract NSObject doObjectify(Object object);
 }

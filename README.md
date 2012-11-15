@@ -1,3 +1,42 @@
+## Additions
+Apple recommends using the binary plist format for sending data to the iOS apps from the server. I needed a Java / Spring framework solution ASAP. Maciej Walkowiak had a text plist solution and Daniel Dreibrodt of http://code.google.com/p/plist/ had a binary plist solution. This is a quick mashup of both. It works for me. Feel free to use or improve. Thanks!
+
+The BinaryPlistView can be used in the ContentNegotiatingViewResolverBean to quickly support binary plist output. The original PlistView takes care of the text plist output.
+
+In your Spring config xmls... renderedAttributes set is used for filtering the model
+
+<!-- Rendered Attributes -->
+<util:set id="renderedAttributes">
+	<value>response</value> <!-- eg. only syndicate the response attribute of the model -->
+</util:set>
+
+<!-- Content Negotiation -->
+<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver" p:order="0">
+  	<property name="mediaTypes">
+      	<map>
+      		.
+      		.
+      		.
+          	<entry key="plist" value="application/x-plist" />
+      	</map>
+  	</property>
+
+	.
+	.
+	.
+  	
+  	<property name="defaultViews">
+      	<list>
+      		.
+      		.
+      		.
+          	<!-- Binary plist -->
+          	<bean class="pl.maciejwalkowiak.plist.spring.BinaryPlistView" p:contentType="application/x-plist" p:renderedAttributes-ref="renderedAttributes" />
+        </list>
+  	</property>
+</bean>   
+
+## Original README
 ## Java Objects to Property List Serializer
 
 java-plist-serializer is a Java library that can be used to convert Java Objects into their Property List representation.
@@ -138,12 +177,6 @@ public class BlogController {
 	}
 }
 ```
-
-### Installation
-
-Current stable version is 1.0. Its not uploaded to any public Maven repository.
-In order to use it please <a href="https://github.com/maciejwalkowiak/java-plist-serializer/zipball/v1.0">download source code</a> and run <code>mvn install</code>.
-
 
 ### Known issues
 

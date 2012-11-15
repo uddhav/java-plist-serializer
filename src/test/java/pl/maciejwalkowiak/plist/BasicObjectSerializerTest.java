@@ -5,6 +5,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import com.dd.plist.NSObject;
+
 import pl.maciejwalkowiak.plist.handler.*;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -30,9 +33,11 @@ public class BasicObjectSerializerTest {
 
 		//when
 		StringBuilder output = basicObjectSerializer.serializeBasicObject(object);
+		NSObject nsObject = basicObjectSerializer.objectifyBasicObject(object); 
 
 		//then
 		assertThat(output.toString()).isEqualTo(handler.handle(object));
+		assertThat(nsObject).isEqualTo(handler.objectify(object));
 	}
 
 	@Test

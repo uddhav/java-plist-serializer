@@ -2,6 +2,9 @@ package pl.maciejwalkowiak.plist;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.dd.plist.NSObject;
+
 import pl.maciejwalkowiak.plist.handler.Handler;
 import pl.maciejwalkowiak.plist.handler.HandlerWrapper;
 import pl.maciejwalkowiak.plist.strategy.DefaultNamingStrategy;
@@ -71,6 +74,23 @@ public class PlistSerializerImpl implements PlistSerializer {
 
 		return result.toString();
 	}
+	
+	public NSObject objectify(Object objectToConvert) {
+		NSObject result = null;
+
+		logger.debug("objectifying input = {}", objectToConvert);
+
+		if (objectToConvert != null) {
+			if (handlerWrapper.isSupported(objectToConvert)) {
+				result = basicObjectSerializer.objectifyBasicObject(objectToConvert);
+			} else {
+				result = fieldSerializer.objectifyFields(objectToConvert);
+			}
+		}
+
+		return result;
+	}
+
 
 	public void setAdditionalHandlers(List<Handler> additionalHandlers) {
 		handlerWrapper.addAdditionalHandlers(additionalHandlers);
