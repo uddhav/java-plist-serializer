@@ -1,4 +1,4 @@
-## Additions
+# Additions
 Apple recommends using the binary plist format for sending data to the iOS apps from the server. I needed a Java / Spring framework solution ASAP. Maciej Walkowiak had a text plist solution and Daniel Dreibrodt of http://code.google.com/p/plist/ had a binary plist solution. This is a quick mashup of both + some tests. It works for me. Feel free to use or improve. Thanks!
 
 The BinaryPlistView can be used in the ContentNegotiatingViewResolverBean to quickly support binary plist output. The original PlistView takes care of the text plist output.
@@ -36,7 +36,7 @@ In your Spring config xmls... renderedAttributes set is used for filtering the m
   	</property>
 </bean>  
 ```
-## Original README
+# Original README
 ## Java Objects to Property List Serializer
 
 java-plist-serializer is a Java library that can be used to convert Java Objects into their Property List representation.
