@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
@@ -32,11 +33,11 @@ public class HandlerWrapperTest {
 	public void testGetHandlerForObjectWhenHandlerNotFound() throws Exception {
 		//given
 		//handler supporting boolean and integer
-		BigDecimal bigDecimal = new BigDecimal(1);
+		UUID uuid = UUID.randomUUID();
 
 		//when
 		try {
-			handlerWrapper.getHandlerForObject(bigDecimal);
+			handlerWrapper.getHandlerForObject(uuid);
 
 			//then
 			fail();
@@ -47,7 +48,7 @@ public class HandlerWrapperTest {
 
 	@Test
 	public void testIsSupported() throws Exception {
-		assertThat(handlerWrapper.isSupported(new BigDecimal(1))).isFalse();
+		assertThat(handlerWrapper.isSupported(UUID.randomUUID())).isFalse();
 		assertThat(handlerWrapper.isSupported(Boolean.FALSE)).isTrue();
 	}
 }

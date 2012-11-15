@@ -205,22 +205,23 @@ public class PlistSerializerImplTest {
 	@Test
 	public void testAdditionalHandler() {
 		//given
-		Handler bigDecimalHandler = new BigDecimalHandler();
-		BigDecimal bd = new BigDecimal(3);
+		Handler uuidHandler = new UUIDHandler();
+		UUID uuid = UUID.randomUUID();
+		String uuidString = uuid.toString();
 
 		//when
-		plistSerializer.setAdditionalHandlers(Arrays.asList(bigDecimalHandler));
-		String xml = plistSerializer.serialize(bd);
+		plistSerializer.setAdditionalHandlers(Arrays.asList(uuidHandler));
+		String xml = plistSerializer.serialize(uuid);
 
 		//then
-		assertThat(xml).isEqualTo("<integer>3</integer>");
+		assertThat(xml).isEqualTo("<string>" + uuidString + "</string>");
 		
 		// when
-		NSObject object = plistSerializer.objectify(bd);
+		NSObject object = plistSerializer.objectify(uuid);
 		
 		// then
-		NSNumber number = new NSNumber(3);
-		assertThat(object).isEqualTo(number);
+		NSString string = new NSString(uuidString);
+		assertThat(object.toXMLPropertyList()).isEqualTo(string.toXMLPropertyList());
 	}
 
 	@Test
