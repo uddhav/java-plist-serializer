@@ -4,7 +4,7 @@ Apple recommends using the binary plist format for sending data to the iOS apps 
 The BinaryPlistView can be used in the ContentNegotiatingViewResolverBean to quickly support binary plist output. The original PlistView takes care of the text plist output.
 
 In your Spring config xmls... renderedAttributes set is used for filtering the model
-
+```
 <!-- Rendered Attributes -->
 <util:set id="renderedAttributes">
 	<value>response</value> <!-- eg. only syndicate the response attribute of the model -->
@@ -34,8 +34,8 @@ In your Spring config xmls... renderedAttributes set is used for filtering the m
           	<bean class="pl.maciejwalkowiak.plist.spring.BinaryPlistView" p:contentType="application/x-plist" p:renderedAttributes-ref="renderedAttributes" />
         </list>
   	</property>
-</bean>   
-
+</bean>  
+```
 ## Original README
 ## Java Objects to Property List Serializer
 
